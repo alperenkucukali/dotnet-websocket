@@ -15,13 +15,13 @@ namespace Mavra.Controllers
             _connectionsService = connectionsService;
         }
 
-        [Route("/chat")]
-        public async Task Get()
+        [Route("/chat/{username}")]
+        public async Task Get([FromRoute]string username)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
                 using WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                WebSocketConnection webSocketConnection = new WebSocketConnection(webSocket);
+                WebSocketConnection webSocketConnection = new WebSocketConnection(webSocket, username);
                 _connectionsService.AddConnection(webSocketConnection);
                 var buffer = new byte[1024 * 4];
                 var receiveResult = await webSocket.ReceiveAsync(

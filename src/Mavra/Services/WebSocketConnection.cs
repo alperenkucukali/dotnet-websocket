@@ -8,9 +8,12 @@ namespace Mavra.Services
 
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public WebSocketConnection(WebSocket webSocket)
+        public string Username { get; private set; } = null!;
+
+        public WebSocketConnection(WebSocket webSocket, string username)
         {
             _webSocket = webSocket;
+            Username = username;
         }
 
         public Task SendAsync(byte[] message)

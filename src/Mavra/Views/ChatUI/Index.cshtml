@@ -25,16 +25,104 @@
             <div class="col-md-10 mx-auto col-lg-5">
                 <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="username">
-                        <label for="floatingInput">Username</label>
+                        <input type="text" class="form-control" required maxlength="32" id="username" placeholder="username">
+                        <label for="username">Username</label>
                     </div>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Join!</button>
+                    <button class="w-100 btn btn-lg btn-primary" type="button" id="joinButton">Join!</button>
                     <hr class="my-4">
-                    <small class="text-body-secondary">This application doesn't store any data.</small>
+                    <small class="text-body-secondary">This application never store your data.</small>
                 </form>
             </div>
         </div>
+        <div class="row" id="chat-area">
+            <hr />
+            <div class="col" id="onmessage"></div>
+        </div>
     </div>
+    <script>
+        var joinButton = document.getElementById("joinButton");
+        var username = document.getElementById("username");
+        var sendMessage = document.getElementById("sendMessage");
+        var sendButton = document.getElementById("sendButton");
+        var closeButton = document.getElementById("closeButton");
+        var stateLabel = document.getElementById("stateLabel");
+        var onmessage = document.getElementById("onmessage");
+        var socket;
+
+        function updateState() {
+            function disable() {
+                //sendMessage.disabled = true;
+                //sendButton.disabled = true;
+                //closeButton.disabled = true;
+            }
+            function enable() {
+                //sendMessage.disabled = false;
+                //sendButton.disabled = false;
+                //closeButton.disabled = false;
+            }
+
+            //joinButton.disabled = true;
+
+            if (!socket) {
+                disable();
+            }
+            else {
+                switch (socket.readyState) {
+                    case WebSocket.CLOSED:
+                        console.log("Disconnected!");
+                        disable();
+                        joinButton.disabled = false;
+                        break;
+                    case WebSocket.CLOSING:
+                        console.log("Disconnecting...");
+                        disable();
+                        break;
+                    case WebSocket.CONNECTING:
+                        console.log("Connecting...");
+                        disable();
+                        break;
+                    case WebSocket.OPEN:
+                        console.log("Connected!");
+                        enable();
+                        break;
+                    default:
+                        disable();
+                        break;
+                }
+            }
+        }
+
+        username.onchange = function () {
+            username.classList.remove('is-invalid');
+        };
+
+        joinButton.onclick = function () {
+            joinButton.disabled = true;
+            joinButton.innerHTML = 'Connecting...';
+            if (username.value.trim() == '') {
+                username.classList.add('is-invalid');
+                joinButton.disabled = false;
+                joinButton.innerHTML = 'Join!';
+                return;
+            }
+            socket = new WebSocket("ws://localhost:5280/chat/" + username.value);
+            socket.onopen = function (event) {
+                updateState();
+                username.classList.add('is-valid');
+                console.log("Connected!");
+            };
+            socket.onclose = function (event) {
+                updateState();
+                console.log(event.code);
+                console.log(event.reason);
+            };
+            socket.onerror = updateState;
+            socket.onmessage = function (event) {
+                console.log(event.data);
+                onmessage.innerHTML += '<br>'+event.data;
+            };
+        };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
