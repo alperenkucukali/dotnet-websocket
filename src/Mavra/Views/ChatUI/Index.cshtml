@@ -105,7 +105,7 @@
                 joinButton.innerHTML = 'Join!';
                 return;
             }
-            socket = new WebSocket("ws://localhost:5280/chat/" + username.value);
+            socket = new WebSocket("ws://" + window.location.host + "/chat/" + username.value);
             socket.onopen = function (event) {
                 updateState();
                 username.classList.add('is-valid');
@@ -119,7 +119,7 @@
             socket.onerror = updateState;
             socket.onmessage = function (event) {
                 console.log(event.data);
-                onmessage.innerHTML += '<br>'+event.data;
+                onmessage.innerHTML += '<br>' + event.data;
             };
         };
     </script>
