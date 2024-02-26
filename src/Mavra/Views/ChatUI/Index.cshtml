@@ -34,11 +34,34 @@
                 </form>
             </div>
         </div>
-        <div class="row" id="chat-area">
-            <hr />
-            <div class="col" id="onmessage"></div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col" id="chat-area">
+                <div class="row">
+                    <div class="col text-start">
+                        <h5>Alperen Kucukali</h5>
+                        <p class="d-inline-block">message</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-end">
+                        <h5>Alperen Kucukali</h5>
+                        <p class="d-inline-block">message</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Message" aria-label="Message" aria-describedby="sendButton">
+                    <button class="btn btn-outline-primary" type="button" id="sendButton">Send</button>
+                </div>
+            </div>
         </div>
     </div>
+
     <script>
         var joinButton = document.getElementById("joinButton");
         var username = document.getElementById("username");
