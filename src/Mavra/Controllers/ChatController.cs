@@ -1,8 +1,11 @@
-﻿using Mavra.Services;
+﻿using Mavra.Models;
+using Mavra.Services;
 using Mavra.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
+using System.Text;
+using System.Text.Json;
 
 namespace Mavra.Controllers
 {
@@ -16,7 +19,7 @@ namespace Mavra.Controllers
         }
 
         [Route("/chat/{username}")]
-        public async Task Get([FromRoute]string username)
+        public async Task Get([FromRoute] string username)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
@@ -29,7 +32,7 @@ namespace Mavra.Controllers
 
                 while (!receiveResult.CloseStatus.HasValue)
                 {
-                    await _connectionsService.SendToAllAsync(buffer, webSocketConnection.Id);
+                    await _connectionsService.SendToAllAsync(new ChatMessage(webSocketConnection.Username, Encoding.UTF8.GetString(buffer), false), webSocketConnection.Id);
                     receiveResult = await webSocket.ReceiveAsync(
                         new ArraySegment<byte>(buffer), CancellationToken.None);
                 }
