@@ -5,6 +5,7 @@ var sendButton = document.getElementById("sendButton");
 var stateLabel = document.getElementById("stateLabel");
 var chatArea = document.getElementById("chat-area");
 var chatContainer = document.getElementById("chatContainer");
+var chatScrollArea = document.getElementById("scroll-chat-area");
 var socket;
 
 function updateState() {
@@ -65,8 +66,11 @@ sendButton.onclick = function () {
         alert("socket not connected");
     }
     socket.send(sendMessage.value);
+    let scrollToBottom = chatScrollArea.scrollHeight - chatScrollArea.scrollTop == chatScrollArea.clientHeight;
     chatArea.insertAdjacentHTML("beforeend", getOwnMessage(username.value, sendMessage.value));
     sendMessage.value = '';
+    if (scrollToBottom)
+        chatScrollArea.scrollTo(0, chatScrollArea.scrollHeight);
 };
 
 joinButton.onclick = function () {
@@ -95,8 +99,11 @@ joinButton.onclick = function () {
     socket.onmessage = function (event) {
         console.log(event.data);
         let msgData = JSON.parse(event.data);
+        let scrollToBottom= chatScrollArea.scrollHeight - chatScrollArea.scrollTop == chatScrollArea.clientHeight;
         chatArea.insertAdjacentHTML("beforeend",
             msgData.IsSystemMessage ? getSystemMessage(msgData.Message) : getMessage(msgData.Sender, msgData.Message));
+        if (scrollToBottom)
+            chatScrollArea.scrollTo(0, chatScrollArea.scrollHeight);
     };
 };
 
