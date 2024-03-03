@@ -10,7 +10,8 @@ This project is a sample of chat application with WebSocket in .NET 8.
 * Real-time broadcasting, receive/send messaging, and system events notification
 
 ### Client
-* Template design with **Html**, **CSS**, and **JavaScript**
+* Template designed with **Html**, **CSS**, and **JavaScript**
+* Used **Bootstrap** as front-end framework
 * **WebSocket client** implementation
 
 
